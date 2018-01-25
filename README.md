@@ -60,7 +60,7 @@ HDMI下可正常输出 需配合歪果仁方法（测试设备：LG 29UM59A)
 再次提醒！ 下载完请校对MD5值！下载完请校对MD5值！下载完请校对MD5值！
 
 右键点击TransMac-以管理员身份运行软件 ，右键制作等待几分钟，出现Restore Complete即为写入完成。
-<a href="https://img.hyejeong.cn/180123/X1.jpg">![SB](https://img.hyejeong.cn/180123/X1.jpg)</a>
+![SB](https://img.hyejeong.cn/180123/X1.jpg)
 
 写完镜像像之后，U盘会变成两个分区，一个叫EFI的就是U盘引导区，里面存在UEFI版本的Clover；另外一个叫U盘的提示你未格式化，这个时候千万不要手贱去格式化，这是因为Windows无法识别Mac的文件格式
 
