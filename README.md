@@ -322,7 +322,7 @@ UUID可以从磁盘工具查到，输入完成之后按Ctrl+X再输入Y再回车
 
 <a href="https://img.hyejeong.cn/180123/X18.png">![](https://img.hyejeong.cn/180123/X18.png)</a>
 
-
+https://img.hyejeong.cn/180123/X18.png
 ------------
 
 ## 最后
