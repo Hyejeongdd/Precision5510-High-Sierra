@@ -6,6 +6,8 @@
 
 望您能耐心的看完文章 尽管他有些啰嗦
 
+    2018/01/25  初版1.0
+
 ------------
 ## 机型配置
 
@@ -19,14 +21,15 @@
     无线网卡：DW1830
     BIOS: 1.6.1
 
+## 注意事项
+进入系统后 一定不要对系统账户进行操作 若丢失了管理员 目前的办法只能是格式化重装！
 
 原机的Intel Wireless 8260AC无解 替换DW1830(BCM94360) TB 180入手
 
-Dell XPS15/5510 上的准确应该叫Type-C接口 测试下若开机前插入Type-C设备 则可以正常启动 进入系统后插入Type-C设备无法驱动（测试设备：绿联Type-C Hub AS88772A+GL850A 双芯片）[淘宝链接](￥JuKJ0OZADYJ￥ "淘宝链接")
+Dell XPS15/5510 上的准确应该叫Type-C接口 测试下若开机前插入Type-C设备 则可以正常启动 进入系统后插入Type-C设备无法驱动（测试设备：绿联Type-C Hub AS88772A+GL850A 双芯片）￥JuKJ0OZADYJ￥
 
 HDMI下可正常输出 需配合歪果仁方法（测试设备：LG 29UM59A)
 有关HDMI：
-
 
     One needs to modify the info.plist in /System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents, and change the corresponding value used in the CLOVER config.plist -> SMBIOS -> board-id from config2 to none.
 
@@ -34,7 +37,6 @@ HDMI下可正常输出 需配合歪果仁方法（测试设备：LG 29UM59A)
 ## 遗留问题
 
     handoff不能正常使用
-    开机有几率进入不了系统 需要重启
 
 ## 准备清单
 
@@ -71,6 +73,7 @@ HDMI下可正常输出 需配合歪果仁方法（测试设备：LG 29UM59A)
 - 如果你和我一样是i7的CPU，可以进入下一步BIOS设置了。
 - 如果你是i5的CPU，用Notepad++打开config.plist，搜索191b0000，改成19160000，保存。
 
+（根据外国友人的提示 在config.plist 里使用19160000可以防止闪屏白条 所以在硬盘EFI中使用的是19160000)
 
 ------------
 
@@ -94,7 +97,7 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 在 General - Boot Sequence，在右边列表找到一个UEFI: U盘型号, Partition 1这样的启动项，把它移动到最顶部，然后Apply，OK，Exit，就可以让U盘第一启动顺序了。
 
 - 如果你找到这样的启动项，跳到下面的Clover引导
-- 如果你没找到，往下看。
+- 如果你没找到，进行下面的操作
 
 若BIOS未能识别启动项，右边点击Add Boot Option，Boot Option Name可以随便填，然后点击File Name右边的按钮进入选择引导的EFI文件。
 
@@ -115,6 +118,7 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 如果顺利的话，就会进入满屏英文滚动，两三分钟后进入安装界面，请跳过下面的slide计算，进入安装这一节。
 
 如果很不幸，选择安装图标后出现了类似下面的画面，提示can not allocate relocation block...的话，就需要手动计算slide值了。
+
 <a href="https://img.hyejeong.cn/180123/X8.jpg">![](https://img.hyejeong.cn/180123/X8.jpg)</a>
 
 ## slide计算
@@ -186,6 +190,7 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 ## 进入安装前的verbose模式
 
 满屏英文就是系统启动过程的各种信息显示，如果你卡住在这个英文画面很久（超过2分钟没有任何变化），你就要去论坛求救一下了。
+
 如果遇到BrcmPatchRAM2: Firmware upgrade not needed.5行不断重复的情况，你可以先把U盘EFI/Clover/kexts/other里面的两个Brcm开头的文件夹剪切到其他地方（可以放AptioFix2文件夹），然后再试试进安装图标。等正常安装完成后再在后面安装硬盘引导的时候把这两个还原回去other里。
 
 ------------
@@ -200,7 +205,7 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 然后第二次进入的话，几秒钟就重启了。
 第三次进入，大概10多分钟就安装好系统了。
 
-安装完之后笔记本自动重启，Clover的引导画面已经多了一个系统图标：Boot macOS from XXX，选择它进入就可以启动系统了，设置时区、语言、无线连接、用户登陆什么的。
+安装完之后笔记本自动重启，Clover的引导画面已经多了一个系统图标：Boot macOS from mac，选择它进入就可以启动系统了，设置时区、语言、无线连接、用户登陆什么的。
 
 有个比较重要的就是提示是否开启FileVault，这东西似乎和用户数据加密有关，开启需要更换部分驱动 个人建议不开启
 
@@ -247,7 +252,7 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 此时 你可以将CLOVER文件夹删除 替换我提供的成品EFI文件
 
-请注意 记得对Config.plist下的slide值进行修改 已经对OsxAptioFix2Drv.efi的替换！
+请注意 记得对Config.plist下的slide值进行修改 以及对OsxAptioFix2Drv.efi的替换！
 
 一切就绪 替换完后进行重启 黑屏的时候拔掉U盘，耐心等待，Clover画面再次出现的话，说明硬盘Clover引导成功。
 
@@ -280,6 +285,8 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
     执行命令：sudo kextcache -i /
 
 第一条命令的AppleGraphicsDevicePolicyInjector.kext是用来打开MacBookPro13,1这个SMBIOS的HDMI图像输出的。 第二条命令的X86PlatformPluginInjector.kext是用来让CPU获得0.8GHz的最低频率的。 第三条是重建缓存，让前面两个驱动在重启后生效。
+
+在Precision5510中 使用X86PlatformPluginInjector.kext后 CPU最低频率约为1.00GHZ 具体原因未知）
 
 ### 关闭Verbose
 
@@ -320,9 +327,24 @@ UUID可以从磁盘工具查到，输入完成之后按Ctrl+X再输入Y再回车
 
 10.13.1更新时 需更换最新版的lilu.kext即可正常升级 其它驱动暂时无影响
 
-![](https://img.hyejeong.cn/180123/X18.png)</a>
+<a href="https://img.hyejeong.cn/180123/X18.png">![](https://img.hyejeong.cn/180123/X18.png)</a>
+
+如果出现了更新提示 建议你先去Pcbeta tonymac等论坛观望升级情况 确定无重大修改后进行更新
+
+若硬盘充裕 建议启用Time Machine备份工具
+
+进入系统后 一定不要对系统账户进行操作 若丢失了管理员 目前的办法只能是格式化重装！
 
 ------------
+
+## 文件下载
+近来百度云大肆对账号限速封禁 为此 特开通坚果云作为备用下载 若你有更好的网盘推荐 请联系我转存 谢谢
+
+[坚果云](https://www.jianguoyun.com/p/DQdmkYkQ8J7cBhjC2UE "坚果云")
+[百度云](https://pan.baidu.com/s/1c3j7bX2 "百度云")
+
+------------
+
 
 ## 最后
 
