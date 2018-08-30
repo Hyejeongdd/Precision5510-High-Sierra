@@ -1,18 +1,20 @@
-写在前头
-
-我真的是萌新啊 这是我第一使用Github上传代码 希望各位大佬多多见谅
-
-
-
 每年的9月起才能拿到Apple的教育优惠 没办法了 只能提前在笔记本上黑苹果体验了
 
-首先先感谢@darkhandz @z65881120 @panruohuai @1148070455 @wmchris 等大佬的分享
+事实证明 就算出了 也莫得钱买 继续黑果吧
+
+本文源地址为：https://hyejeong.cn/hackintosh5510
+
+如果您在安装过程中出现了问题 欢迎发表Issues我会在看到后第一时间处理 谢谢
+
+首先先感谢 @darkhandz @z65881120 @panruohuai @1148070455 @wmchris @Scottsanett 等大佬的分享
 
 这是一篇完全针对新手向的教程 适用于XPS15 9550/Precision 5510
 
 望您能耐心的看完文章 尽管他有些啰嗦
 
     2018/01/25  初版1.0
+    2018/06/24  Release 1.0
+    2018/07/04  Release 1.1
 
 ------------
 ## 机型配置
@@ -21,70 +23,75 @@
     CPU：Intel i7 6820HQ Processor
     内存：Micron Technology DDR4 2133 16G
     硬盘：Samsung PM951 512G + HGST 1T 7200 Rpm
-    显卡：HD530
+    显卡：Intel HD Graphics 530
     显示器：SHARP 3840x2160
     声卡：Realtek ALC298
-    无线网卡：DW1830
-    BIOS: 1.6.1
+    无线网卡：DW1830(BCM94360)
+    BIOS: 1.7.0
 
 ## 注意事项
+
 进入系统后 一定不要对系统账户进行操作 若丢失了管理员 目前的办法只能是格式化重装！
 
 原机的Intel Wireless 8260AC无解 替换DW1830(BCM94360) TB 180入手
 
-Dell XPS15/5510 上的准确应该叫Type-C接口 测试下若开机前插入Type-C设备 则可以正常启动 进入系统后插入Type-C设备无法驱动（测试设备：绿联Type-C Hub AS88772A+GL850A 双芯片）￥JuKJ0OZADYJ￥
 
-HDMI下可正常输出 需配合歪果仁方法（测试设备：LG 29UM59A)
-有关HDMI：
-
-    One needs to modify the info.plist in /System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/AppleGraphicsDevicePolicy.kext/Contents, and change the corresponding value used in the CLOVER config.plist -> SMBIOS -> board-id from config2 to none.
 
 
 ## 遗留问题
 
-    handoff不能正常使用
+ Type-C部分设备无法驱动 已知DA200可以正常运行 绿联AX88772无法运作
 
 ## 准备清单
 
-    macOS High Sierra 10.13.1(17B48)正式版 with Clover 4278原版镜像
-    TransMAC 11.0
+    MacOS High Sierra 10.13.5(17F77) with Clover 4512
+    TransMAC 12.0
     Diskgenius x64
     一枚大于8G的USB3.0 U盘 如果你不想读条心态爆炸 建议你准备一个USB3.0的U盘
-    一台备用的电脑 可以进行修改plist和替换EFI的行为
+    一台备用的电脑 可以进行修改Plist和替换EFI的行为
 
+## 动手前必须看的东西
+
+黑苹果有一定的门槛和难度 如果你没有一点想动手的能力 劝你右上角点掉这个网页 避免让你感到糟心
+
+如果你觉得接下来的操作对你有难度 而且你不愿意看如此长篇大论 还是请你关掉这个网页
 
 ------------
 
 ## 镜像写入
 
-话不多说 开始操作 
+话不多说 开始操作
 
-我所使用的镜像是macOS High Sierra 10.13.1(17B48)正式版 with Clover 4278 是黑果小兵制作的 是可以正常安装的 当然你也可以选择10.13.2 当然 保险起见 还是希望你和我的版本一致
+我所使用的镜像是MacOS High Sierra 10.13.5(17F77) with Clover 4512 当然 保险起见 还是希望你和我的版本一致
 
-[镜像下载地址](https://blog.daliansky.net/macOS-High-Sierra-10.13.1-(17B48)-official-version-and-Clover-4278-original-image.html "镜像下载地址")
+[镜像下载地址](https://blog.daliansky.net/macOS-High-Sierra-10.13.5-17F77-Release-Version-with-Clover-4512-original-mirror.html "镜像下载地址")
 
 再次提醒！ 下载完请校对MD5值！下载完请校对MD5值！下载完请校对MD5值！
 
-右键点击TransMac-以管理员身份运行软件 ，右键制作等待几分钟，出现Restore Complete即为写入完成。
+右键点击TransMac - 以管理员身份运行软件 ，找到准备制作的U盘，右键Restore with Disk Image，选择下载好的印象 等待几分钟 出现Restore Complete就说明完成制作了
+
 <a href="https://img.hyejeong.cn/180123/X1.jpg">![](https://img.hyejeong.cn/180123/X1.jpg)</a>
 
-写完镜像像之后，U盘会变成两个分区，一个叫EFI的就是U盘引导区，里面存在UEFI版本的Clover；另外一个叫U盘的提示你未格式化，这个时候千万不要手贱去格式化，这是因为Windows无法识别Mac的文件格式
+写完镜像之后，U盘会变成两个分区，一个叫EFI的就是U盘引导区，里面存在镜像自带的Clover；另外一个叫U盘的提示你未格式化，这个时候千万不要手贱去格式化，这是因为Windows无法识别Mac的文件格式
 
 打开Diskgenius，你可以大概浏览一下U盘EFI引导区目录结构：
 
 <a href="https://img.hyejeong.cn/180123/X2.png">![](https://img.hyejeong.cn/180123/X2.png)</a>
 
-制作好镜像后 使用我预先准备的EFI文件 可以将镜像U盘下的Clover下全部删除替换为我提供的EFI
+制作好镜像后 在下面你可以找到Installer所需要的EFI文件 下载解压 用DiskGenius替换U盘里的EFI下的Clover文件夹 然后保存后 安全弹出U盘 强行移除可能会出现未知的错误
 
 - 如果你和我一样是i7的CPU，可以进入下一步BIOS设置了。
 - 如果你是i5的CPU，用Notepad++打开config.plist，搜索191b0000，改成19160000，保存。
 
-（根据外国友人的提示 在config.plist 里使用19160000可以防止闪屏白条 所以在硬盘EFI中使用的是19160000)
+在文章下面你可以找到Install所需要的EFI文件 下载解压 用DiskGenius替换U盘里的EFI下的Clover文件夹
+
+保存后 安全弹出U盘
+
+强行移除可能会出现未知的错误
 
 ------------
 
 ## BIOS设置
-
 
 重启，开机狂按F2，直到DELL Logo下方出现蓝色进度条，进入后 执行以下操作
 
@@ -92,9 +99,11 @@ HDMI下可正常输出 需配合歪果仁方法（测试设备：LG 29UM59A)
 - System Configuration - SATA Operation 改成 AHCI
 - System Configuration - Miscellaneous Devices 去除 Enable Secure Digital(SD)Card
 
-<a href="https://img.hyejeong.cn/180123/X3.jpg">![](https://img.hyejeong.cn/180123/X3.jpg)</a>
-<a href="https://img.hyejeong.cn/180123/X4.jpg">![](https://img.hyejeong.cn/180123/X4.jpg)</a>
-<a href="https://img.hyejeong.cn/180123/X5.jpg">![](https://img.hyejeong.cn/180123/X5.jpg)</a>
+<a href="https://img.hyejeong.cn/MacOS/X1.jpg">![](https://img.hyejeong.cn/MacOS/X1.jpg)</a>
+
+<a href="https://img.hyejeong.cn/MacOS/X2.jpg">![](https://img.hyejeong.cn/MacOS/X2.jpg)</a>
+
+<a href="https://img.hyejeong.cn/MacOS/X3.jpg">![](https://img.hyejeong.cn/MacOS/X3.jpg)</a>
 
 Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无法进入原系统
 
@@ -107,9 +116,9 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 若BIOS未能识别启动项，右边点击Add Boot Option，Boot Option Name可以随便填，然后点击File Name右边的按钮进入选择引导的EFI文件。
 
-<a href="https://img.hyejeong.cn/180123/X6.jpg">![](https://img.hyejeong.cn/180123/X6.jpg)</a>
+<a href="https://img.hyejeong.cn/MacOS/X5.jpg">![](https://img.hyejeong.cn/MacOS/X5.jpg)</a>
 
-<a href="https://img.hyejeong.cn/180123/X7.jpg">![](https://img.hyejeong.cn/180123/X7.jpg)</a>
+<a href="https://img.hyejeong.cn/MacOS/X4.jpg">![](https://img.hyejeong.cn/MacOS/X4.jpg)</a>
 
 选择CLOVERX64.efi 保存 把它移动到最顶部，然后OK，Apply，Exit，就可以让U盘第一启动顺序了。
 
@@ -119,9 +128,15 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 <a href="https://img.hyejeong.cn/180123/X12.jpg">![](https://img.hyejeong.cn/180123/X12.jpg)</a>
 
-选择Boot OS X Install from Install macOS High Sierra 这个安装图标按回车键。
+选择Boot OS X Install from Install macOS High Sierra 这个安装图标 按下空格键 勾选上Verbose这个选项 然后选择Boot with selected mode
 
-如果顺利的话，就会进入满屏英文滚动，两三分钟后进入安装界面，请跳过下面的slide计算，进入安装这一节。
+如果顺利的话，就会进入满屏英文滚动，两三分钟后进入安装界面，这个等待的时间每个人可能都不一样 给点耐心 否则 右上角关掉网页
+
+如果突然卡住 你可以拍照下来咨询网友 我们可以尽可能的为你解决问题 但拒绝伸手党
+
+Message QQ 756876988
+
+同时 请跳过下面的slide计算，进入安装这一节。
 
 如果很不幸，选择安装图标后出现了类似下面的画面，提示can not allocate relocation block...的话，就需要手动计算slide值了。
 
@@ -129,23 +144,8 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 ## slide计算
 
-用备用电脑把U盘引导里面Driver64UEFI的OsxAptioFixDrv-64.efi改名成OsxAptioFixDrv-64.efix（留做备份）
 
-将OsxAptioFix2Drv-64.efi放入Driver64UEFI下
-
-然后打开config.plist，搜索kext-dev-mode，在它前面加一个slide=148，变成了下面这样：
-
- 
-
-    slide=148 kext-dev-mode=1 dart=0 nv_disable=1 -v
-
-现在保存，然后重启，再次进入Clover引导画面，选择安装图标，看看是否顺利进入满屏英文，两三分钟后进入安装界面，跳到下一节
-
-如果很不幸，选择安装图标后卡住在下面的画面，说明148这个数不适合你：
-
-<a href="https://img.hyejeong.cn/180123/X9.jpg">![](https://img.hyejeong.cn/180123/X9.jpg)</a>
-
-留意错误信息Error allocating 0x13ed0 pages at 0x0000000019166000 ...，记住0x13ed0这个数值，你将会面临本教程最艰难的部分。
+留意错误信息Error allocating 0x13ed0 pages at 0x0000000019166000 ...，记住0x13ed0这个数值，你将会面临本教程最艰难的部分,不同的机器这个数值也是不一样的 根据自身的状况进行计算
 
 重启，再回到Clover引导画面，如下图，选取下面行的第一个图标，进入UEFI Shell 64界面
 
@@ -155,9 +155,9 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 不同的内存容量和不同的BIOS版本，上图的数据是不同的，上图是我Micron 16G内存在1.6.1 BIOS下的情况。
 
-我们在图中找符合以下条件的行： 
-1. Type列的值是Available 
-2. Pages列的值大于等于13ed0这个值 
+我们在图中找符合以下条件的行：
+1. Type列的值是Available
+2. Pages列的值大于等于13ed0这个值
 3. Start列的值比100000大
 
 不难得出两个结果：
@@ -182,9 +182,7 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 ## slide注意事项
 
-如果计算出来的值还是有问题（出现前面同样的错误，或者只显示一排++++号就不动了），那你可以试试把计算出的值加1或减1，即slide=147和slide=149都试试。
-
-如果很不幸，你还是无法进入满屏英文的画面，我只能建议你降级BIOS到1.2.21版本，然后用OsxAptioFixDrv-64.efi了，也就是U盘刚被写入dmg映像的状态。
+如果计算出来的值还是有问题（出现前面同样的错误，或者只显示一排++++号就不动了），那你可以试试把计算出的值加1或减1，比如计算出来是148,即slide=147和slide=149都试试。
 
 要注意的是，这里只是临时修改启动参数，你每次重启它都会恢复回原来的样子。所以我们要备用电脑，打开config.plist把slide=168改成slide=你测试出的可启动值，保存，然后再进入安装界面。
 
@@ -192,23 +190,16 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 ------------
 
-
-## 进入安装前的verbose模式
-
-满屏英文就是系统启动过程的各种信息显示，如果你卡住在这个英文画面很久（超过2分钟没有任何变化），你就要去论坛求救一下了。
-
-如果遇到BrcmPatchRAM2: Firmware upgrade not needed.5行不断重复的情况，你可以先把U盘EFI/Clover/kexts/other里面的两个Brcm开头的文件夹剪切到其他地方（可以放AptioFix2文件夹），然后再试试进安装图标。等正常安装完成后再在后面安装硬盘引导的时候把这两个还原回去other里。
-
-------------
-
-
 ## 安装
 
 希望你不是经历了上面梦魇般的slide计算步骤才来到这里的，如果是的话，您辛苦了。
 
-进入安装界面后，你可以用磁盘工具对你的SSD进行分区，比如我就分成两个Mac和Windows两个区了。
+进入安装界面后，你可以用磁盘工具对你的SSD进行分区，目前我的5510的固态全部分给MacOS使用。
+
 第一次进入安装过程2分钟左右就会重启，然后Clover多了一个叫Boot macOS Install from Mac（系统分区名）的图标，直接对着它回车。
+
 然后第二次进入的话，几秒钟就重启了。
+
 第三次进入，大概10多分钟就安装好系统了。
 
 安装完之后笔记本自动重启，Clover的引导画面已经多了一个系统图标：Boot macOS from mac，选择它进入就可以启动系统了，设置时区、语言、无线连接、用户登陆什么的。
@@ -224,17 +215,18 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 目前都是靠U盘的Clover引导才能进入系统的，所以我们要把Clover安装到硬盘的EFI分区，让系统脱离U盘引导
 
-找到提前准备好的 Clover_v2.4k_r4391.pkg （Mac下对NTFS分区只能读不能写 你可以提前将这些放在仓库盘内）
+找到提前准备好的 Clover.pkg （Mac下对NTFS分区只能读不能写 你可以提前将这些放在仓库盘内）
 
 双击打开，提示来自身份不明的开发者，这个时候你可以按组合键Alt + 空格，然后输入term回车，就跳出终端窗口了。
 
 在终端输入：sudo spctl --master-disable 回车，提示输入密码执行，然后没有任何输出，这就代表执行成功了
 
-<a href="https://img.hyejeong.cn/180123/X13.png">![](https://img.hyejeong.cn/18012/X13.png)</a>
+<a href="https://img.hyejeong.cn/180123/X13.png">![](https://img.hyejeong.cn/180123/X13.png)</a>
 
 再次双击刚才的pkg进入安装
 
 ### Clover安装
+
 出现安装窗口，点击继续 ，再继续，点击更改安装位置，选择你的 （Mac）系统分区，再点击左下角的自定义，按下图的勾选
 
 <a href="https://img.hyejeong.cn/180123/X14.png">![](https://img.hyejeong.cn/180123/X14.png)</a>
@@ -246,19 +238,19 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 ## EFI完善
 
-硬盘Clover安装后 移除U盘 重新启动 若可以进入Clover界面 则代表Clover 安装成功
-
 ### Clover Configurator
 
 打开准备好的Clover Configurator 现在对硬盘里的EFI文件进行替换
 
 <a href="https://img.hyejeong.cn/180123/X15.png">![](https://img.hyejeong.cn/180123/X15.png)</a>
 
-点击左边栏的Mount EFI - 在Efi Partitions 下 点击 Mount Partition - Open Partition
+点击左边栏的Mount EFI - 在EFI Partitions 下 点击 Mount Partition - Open Partition
+
+<a href="https://img.hyejeong.cn/MacOS/X10.png">![](https://img.hyejeong.cn/MacOS/X10.png)</a>
 
 此时 你可以将CLOVER文件夹删除 替换我提供的成品EFI文件
 
-请注意 记得对Config.plist下的slide值进行修改 以及对OsxAptioFix2Drv.efi的替换！
+请注意 记得对Config.plist下的Slide值进行修改
 
 一切就绪 替换完后进行重启 黑屏的时候拔掉U盘，耐心等待，Clover画面再次出现的话，说明硬盘Clover引导成功。
 
@@ -282,72 +274,68 @@ Warning: 若你原本是SATA Operation为Raid On 更改成AHCI后将会导致无
 
 ## 补丁修正
 
-### LE
+部分安装后出现耳机播放音乐有电流音 安装VerbStub补丁后可即可修复 下载地址统一在文件下载里
 
-这个文件夹的东西是要安装到/Library/Extensions/里面的。
+下载后解压 我担心操作过于复杂 特意录制了GIF供你们参考
 
-    执行命令：sudo cp -r 把AppleGraphicsDevicePolicyInjector.kext拖过来 /Library/Extensions/
-    执行命令：sudo cp -r 把X86PlatformPluginInjector.kext拖过来 /Library/Extensions/
-    执行命令：sudo kextcache -i /
+<a href="https://img.hyejeong.cn/MacOS/X1.gif">![](https://img.hyejeong.cn/MacOS/X1.gif)</a>
 
-第一条命令的AppleGraphicsDevicePolicyInjector.kext是用来打开MacBookPro13,1这个SMBIOS的HDMI图像输出的。 第二条命令的X86PlatformPluginInjector.kext是用来让CPU获得0.8GHz的最低频率的。 第三条是重建缓存，让前面两个驱动在重启后生效。
 
-在Precision5510中 使用X86PlatformPluginInjector.kext后 CPU最低频率约为1.00GHZ 具体原因未知）
-
-### 关闭Verbose
-
-如果你觉得你的系统足够稳定了，但是每次开机依然一屏屏英文字符把你刷得头晕眼花无心工作，那就在config.plist里找到下面这句，去掉-v就行了：
-
-    kext-dev-mode=1 dart=0 nv_disable=1 -v
-
-### 禁止生成休眠文件
-
-简单来说就是SSD的写入寿命有限，而默认的休眠模式3会每次都把内存数据写入SSD（大概8G一次）。
-
-然后说说禁用休眠的命令，3条按顺序执行：
-
-    sudo pmset hibernatemode 0
-    sudo rm /var/vm/sleepimage
-    sudo mkdir /var/vm/sleepimage
-
-### 原生NTFS读写
-
- 1. 打开终端输入 diskutil list 查看所有分区的卷标（NAME列）
- 2. 输入 sudo nano /etc/fstab 再输入密码回车进入配置
- 3. 根据自己要配置的NTFS分区的卷标或UUID输入配置信息，下面各列举一条：
- 
-        UUID=C3C40C2E-7766-48A0-AA99-18305C9BAD3A none ntfs rw,auto,nobrowse
-        LABEL=多媒体 none ntfs rw,auto,nobrowse
-
-UUID可以从磁盘工具查到，输入完成之后按Ctrl+X再输入Y再回车进行保存。 
-
- 4. 用磁盘工具将配置好的分区进行卸载再装载使配置生效（无需重启） 
- 5. 因为加入了nobrowse所以Finder中看不到修改过的NTFS分区（不加入nobrowse会无法写入）所以要使用快捷方式进行访问. 在终端中输入 sudo ln -s /Volumes/卷标 ~/Desktop/卷标 即可在桌面生成NTFS分区的快捷方式。 
- 6. 将快捷方式拖动到Finder的侧边栏就可以很方便的打开NTFS分区进行操作了
- 
-------------
-
-## 系统升级 
-
-截止到今天1月25号 最新版本为10.13.3 可以正常更新 
-
-10.13.1更新时 需更换最新版的lilu.kext即可正常升级 其它驱动暂时无影响
-
-<a href="https://img.hyejeong.cn/180123/X18.png">![](https://img.hyejeong.cn/180123/X18.png)</a>
-
-如果出现了更新提示 建议你先去Pcbeta tonymac等论坛观望升级情况 确定无重大修改后进行更新
-
-若硬盘充裕 建议启用Time Machine备份工具
-
-进入系统后 一定不要对系统账户进行操作 若丢失了管理员 目前的办法只能是格式化重装！
 
 ------------
 
+## 系统升级
+
+截止到今天7月5号 最新版本为10.13.6 可以正常更新
+
+Mojave的EFI驱动也可以支持到DB3 强调一下只能用于升级不能用于安装 当然可以重新安装 下面有提供Mojave的Install EFI
+
+<a href="https://img.hyejeong.cn/MacOS/X1.png">![](https://img.hyejeong.cn/MacOS/X1.png)</a>
+
+<a href="https://img.hyejeong.cn/MacOS/X9.jpg">![](https://img.hyejeong.cn/MacOS/X9.jpg)</a>
+
+------------
+
+## 白果三码
+
+注入白果三码就可以激活iMessage、Facetime 获得更好的体验
+
+获取途径这里不进行讲解 提取白果的三码也很简单
+
+下载iMessageDebug后 执行命令就可以了
+
+<a href="https://img.hyejeong.cn/MacOS/X2.gif">![](https://img.hyejeong.cn/MacOS/X2.gif)</a>
+
+执行了chmod a+x 后 iMessageDebug变成了一个可执行文件 打开
+
+会出现一堆东西 拍照保存
+
+黑苹果在Clover Configurator里替换即可
+
+<a href="https://img.hyejeong.cn/MacOS/X6.png">![](https://img.hyejeong.cn/MacOS/X6.png)</a>
+
+红色框选的部位是最重要的部分
+
+<a href="https://img.hyejeong.cn/MacOS/X7.png">![](https://img.hyejeong.cn/MacOS/X7.png)</a>
+
+<a href="https://img.hyejeong.cn/MacOS/X8.png">![](https://img.hyejeong.cn/MacOS/X8.png)</a>
+
+数据对照白果的填入即可  其中SmUUID填入HardWare UUID  Custom UUID填入System-ID
+
+保存后重启即可
+
+------------
 ## 文件下载
-近来百度云大肆对账号限速封禁 为此 特开通坚果云作为备用下载 若你有更好的网盘推荐 请联系我转存 谢谢
 
-[坚果云](https://www.jianguoyun.com/p/DQdmkYkQ8J7cBhjC2UE "坚果云")
-[百度云](https://pan.baidu.com/s/1c3j7bX2 "百度云")
+文件全部转存至针针云盘
+
+[TransMac](https://zhenbaby.cn/s/fnjvsoe6 "TransMac")<br>
+[Install EFI 10.13 ](https://zhenbaby.cn/s/ezdeiecl "Install EFI 10.13")<br>
+[Install EFI 10.14 ](https://zhenbaby.cn/s/2tyuqt58 "Install EFI 10.14")<br>
+[Final EFI 10.13/10.14 ](https://zhenbaby.cn/s/o5pedf35 "Final EFI 10.13/10.14")<br>
+[VerbStub](https://zhenbaby.cn/s/me8kveyp "VerbStub")<br>
+[Clover](https://zhenbaby.cn/s/a9npkyoz "Clover")<br>
+[Clover Configurator](https://zhenbaby.cn/s/h09qorp2 "Clover Configurator")<br>
 
 ------------
 
@@ -356,19 +344,15 @@ UUID可以从磁盘工具查到，输入完成之后按Ctrl+X再输入Y再回车
 
 到这里为止 整个教程也算告一个段落了 目前的版本已经可以满足你的日常功能使用 尽管他还不算十分的完美
 
-整个教程并非我一人独自完成 许多部分都是借鉴摘抄 @Darkhandz 大神的教程 
+整个教程并非我一人独自完成 许多部分都是借鉴摘抄 @darkhandz 大神的教程
 
-十分感谢大神的贡献 才能整合出一个相对完美的黑苹果版本 
+最新的EFI配置文件是由 @Scottsanett 搭配生成的
 
-资料参考
+十分感谢大神的贡献 才能整合出一个相对完美的黑苹果版本
 
-http://bbs.pcbeta.com/viewthread-1751493-1-1.html
-http://bbs.pcbeta.com/viewthread-1761764-1-1.html
-http://bbs.pcbeta.com/viewthread-1766955-1-1.html
-https://github.com/darkhandz/XPS15-9550-High-Sierra/issues/12
-https://github.com/darkhandz/XPS15-9550-High-Sierra
-https://github.com/wmchris/DellXPS15-9550-OSX
+如果我的工作对您有所帮助  你可以选择[捐赠](https://img.hyejeong.cn/donate.png "捐赠")我
 
-2018.1.25
+
+2018.7.5
 
 针针
